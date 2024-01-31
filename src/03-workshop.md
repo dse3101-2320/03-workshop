@@ -150,6 +150,7 @@ tab2
 **The following code plots the year-on-year inflation.**
 
 ``` r
+# Prepare data for plot
 tab2 %>%
   select(1:3) %>%
   separate(Month, into = c("year", "month"), fill = "left") %>%
