@@ -6,7 +6,7 @@ YH
 - [Exercise with data](#exercise-with-data)
   - [CPI for key categories (Page 7 on
     PDF)](#cpi-for-key-categories-page-7-on-pdf)
-  - [YOY inflation (Page 8)](#yoy-inflation-page-8)
+  - [Year-on-year inflation (Page 8)](#year-on-year-inflation-page-8)
 
 # Exercise with data
 
@@ -95,7 +95,7 @@ tab1
 
 </div>
 
-## YOY inflation (Page 8)
+## Year-on-year inflation (Page 8)
 
 Using a similar approach, we can extract data on Page 8. This gives us
 the **year-on-year inflation on key CPI categories**.
@@ -172,8 +172,7 @@ ggplot(data = tab3, aes(x = yr_month, y = inflation, color = category)) +
             size = 4.5, hjust = "left", nudge_x = 6, show.legend = FALSE) +
   scale_x_date(date_breaks = "1 month", date_labels = "%Y %b", limits = range) +
   scale_color_manual(values = c("darkgray", "steelblue")) +
-  labs(x = "", y = "% YOY", color = "", 
-       title = "MAS Core and CPI-All Items Inflation") +
+  labs(title = "MAS Core and CPI-All Items Inflation, %") +
   theme_fivethirtyeight()
 ```
 
