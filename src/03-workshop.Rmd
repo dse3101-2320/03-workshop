@@ -8,7 +8,7 @@ output:
     toc_depth: 2
     fig_width: 10
     fig_height: 4
-    df_print: paged
+    df_print: kable
 ---
 
 ```{r setup, include=FALSE}
@@ -17,7 +17,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Exercise with data
 
-Download `wk3_cpi2023.pdf` from Canvas. The data contain **Singapore's Consumer Price Index (CPI) in 2023**, originally retrieved from [MAS](https://www.mas.gov.sg/monetary-policy/consumer-price-developments).
+Download `wk3_cpi2023.pdf` from Canvas. The data contain **Singapore's Consumer Price Index (CPI) in 2023**. It was originally retrieved from [MAS](https://www.mas.gov.sg/monetary-policy/consumer-price-developments).
 
 Let's read the file into `R`.
 
