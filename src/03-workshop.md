@@ -10,10 +10,11 @@ YH
 
 # Exercise with data
 
-Download `wk3_cpi2023.pdf` from Canvas. The data contain Singapore’s
-Consumer Price Index (CPI) in 2023, originally retrieved from MAS.
+Download `wk3_cpi2023.pdf` from Canvas. The data contain **Singapore’s
+Consumer Price Index (CPI) in 2023**, originally retrieved from
+[MAS](https://www.mas.gov.sg/monetary-policy/consumer-price-developments).
 
-Read it into `R`.
+Let’s read the file into `R`.
 
 ``` r
 library(tidyverse)
@@ -23,11 +24,14 @@ txt <- pdf_text("../data/wk3_cpi2023.pdf")
 
 ## CPI for key categories (Page 7 on PDF)
 
+We first extract the table on Page 7. This will give us the **CPI for
+key categories, with 2019 as the base year**.
+
 ``` r
 # Table on page 7
 tab1 <- txt[7]
 
-# Scan to separate text file into rows
+# Split text file into rows
 rows <- str_split(tab1, "\\n+", simplify = TRUE) %>% str_trim()
   
 # Column names in lines 4-6
@@ -37,11 +41,13 @@ names1 <- rows[4] %>%
 names2 <- rows[5] %>%
   str_trim() %>%
   str_split("\\s{2,}", simplify = TRUE) %>%
+  # adding necessary strings
   append(c("", ""), after = 0) %>%
   append(c("", ""), after = 4)
 names3 <- rows[6] %>%
   str_trim() %>%
   str_split("\\s{2,}", simplify = TRUE) %>%
+  # adding necessary strings
   append(c("", ""), after = 0) %>%
   append(c("", "", ""), after = 3) %>%
   append(c("", "", ""), after = 7)
@@ -55,7 +61,6 @@ rows[8:20] %>%
   str_split("\\s{2,}", simplify = TRUE) %>%
   data.frame() %>%
   setNames(colnames) %>%
-  # Convert everything (except for the first column) into numeric
   mutate_at(-1, parse_number) -> tab1
 
 tab1
@@ -92,38 +97,31 @@ tab1
 
 ## YOY inflation (Page 8)
 
+Using a similar approach, we can extract data on Page 8. This gives us
+the **year-on-year inflation on key CPI categories**.
+
 ``` r
 # Table on page 8
 tab2 <- txt[8]
 
-# Scan to separate text file into rows
+# Split text file into rows
 rows <- str_split(tab2, "\\n+", simplify = TRUE) %>% str_trim()
-# Column names in lines 3-5
-names1 <- rows[3] %>%
-  str_trim() %>%
-  str_split("\\s{2,}", simplify = TRUE)
-names2 <- rows[4] %>%
-  str_trim() %>%
-  str_split("\\s{2,}", simplify = TRUE) %>%
-  append(c("", ""), after = 0) %>%
-  append(c("", ""), after = 4)
-names3 <- rows[5] %>%
-  str_trim() %>%
-  str_split("\\s{2,}", simplify = TRUE) %>%
-  append(c("", ""), after = 0) %>%
-  append(c("", "", ""), after = 3) %>%
-  append(c("", "", ""), after = 7)
-colnames <- str_c(names1, names2, names3, sep = " ") %>% 
-  str_replace_all("\\s", "") %>%
-  append("Month", after = 0)
+# Same column names as the previous table
+colnames
+```
 
+    ##  [1] "Month"                "AllItems"             "MASCore"             
+    ##  [4] "CPILessAccommodation" "CPILessOOA"           "Food"                
+    ##  [7] "Services"             "Retail&OtherGoods"    "Electricity&Gas"     
+    ## [10] "PrivateTransport"     "Accommodation"
+
+``` r
 # Final table on page 8
 rows[7:19] %>%
   str_trim() %>%
   str_split("\\s{2,}", simplify = TRUE) %>%
   data.frame() %>%
   setNames(colnames) %>%
-  # Convert everything (except for the first column) into numeric
   mutate_at(-1, parse_number) -> tab2
 
 tab2
@@ -157,3 +155,35 @@ tab2
     ## 11               1.6             1.8             11.7           4.2
     ## 12               1.0             1.5              4.2           4.1
     ## 13               1.1             1.3              5.0           4.1
+
+**The following code plots the year-on-year inflation.**
+
+``` r
+tab2 %>%
+  select(1:3) %>%
+  separate(Month, into = c("year", "month"), fill = "left") %>%
+  mutate(year = case_when(
+    is.na(year) ~ "2023",
+    TRUE ~ year
+  )) %>%
+  mutate(yr_month = ym(paste(year, month, sep = "-"))) %>%
+  pivot_longer(AllItems:MASCore, names_to = "category", values_to = "inflation") %>%
+  select(yr_month, category, inflation) -> tab3
+
+tab4 <- tab3 %>% filter(yr_month == "2023-12-01")
+range <-  c(as.Date("2022-12-01"), as.Date("2024-01-01"))
+
+library(ggthemes)
+ggplot(data = tab3, aes(x = yr_month, y = inflation, color = category)) +
+  geom_line(lwd = 2) +
+  geom_text(data = tab4, aes(label = paste0(inflation, "%")), 
+            size = 4.5, hjust = "left", nudge_x = 6, show.legend = FALSE) +
+  scale_x_date(date_breaks = "1 month", date_labels = "%Y %b", limits = range) +
+  scale_color_manual(values = c("darkgray", "steelblue")) +
+  labs(x = "", y = "% YOY", color = "", 
+       title = "MAS Core and CPI-All Items Inflation") +
+  theme_fivethirtyeight() +
+  theme(axis.text.x = element_text(angle = 15, vjust = 0.5, hjust=1))
+```
+
+![](03-workshop_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
