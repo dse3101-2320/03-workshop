@@ -17,12 +17,15 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Exercise with data
 
-Download `wk3_cpi2023.pdf` from Canvas. The data contain **Singapore's Consumer Price Index (CPI) in 2023**. It was originally retrieved from [MAS](https://www.mas.gov.sg/monetary-policy/consumer-price-developments).
+Download `wk3_cpi2023.pdf` from Canvas. The data contain **Singapore's Consumer Price Index (CPI) in 2023**. 
+
+It was originally retrieved from [MAS](https://www.mas.gov.sg/monetary-policy/consumer-price-developments).
 
 Let's read the file into `R`.
 
 ```{r message = FALSE, warning = FALSE}
 library(tidyverse)
+library(ggthemes)
 library(pdftools)
 txt <- pdf_text("../data/wk3_cpi2023.pdf")
 ```
@@ -112,7 +115,6 @@ range <-  c(as.Date("2022-12-01"), as.Date("2024-01-01"))
 ```
 
 ```{r}
-library(ggthemes)
 ggplot(data = tab3, aes(x = yr_month, y = inflation, color = category)) +
   geom_line(lwd = 2) +
   geom_text(data = tab4, aes(label = paste0(inflation, "%")), 
