@@ -172,7 +172,9 @@ tab2 %>%
 
 tab4 <- tab3 %>% filter(yr_month == "2023-12-01")
 range <-  c(as.Date("2022-12-01"), as.Date("2024-01-01"))
+```
 
+``` r
 library(ggthemes)
 ggplot(data = tab3, aes(x = yr_month, y = inflation, color = category)) +
   geom_line(lwd = 2) +
@@ -185,4 +187,4 @@ ggplot(data = tab3, aes(x = yr_month, y = inflation, color = category)) +
   theme_fivethirtyeight()
 ```
 
-![](03-workshop_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+![](03-workshop_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
