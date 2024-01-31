@@ -1,0 +1,105 @@
+---
+title: "Week 3 Workshop"
+author: "YH"
+date: "`r Sys.Date()`"
+output: 
+  github_document:
+    toc: true
+    toc_depth: 2
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Exercise with data
+
+Download `wk3_cpi2023.pdf` from Canvas. The data contain Singapore's Consumer Price Index (CPI) in 2023, originally retrieved from MAS.
+
+Read it into `R`.
+
+```{r message = FALSE, warning = FALSE}
+library(tidyverse)
+library(pdftools)
+txt <- pdf_text("../data/wk3_cpi2023.pdf")
+```
+
+## CPI for key categories (Page 7 on PDF)
+
+```{r message = FALSE, warning = FALSE}
+# Table on page 7
+tab1 <- txt[7]
+
+# Scan to separate text file into rows
+rows <- str_split(tab1, "\\n+", simplify = TRUE) %>% str_trim()
+  
+# Column names in lines 4-6
+names1 <- rows[4] %>%
+  str_trim() %>%
+  str_split("\\s{2,}", simplify = TRUE)
+names2 <- rows[5] %>%
+  str_trim() %>%
+  str_split("\\s{2,}", simplify = TRUE) %>%
+  append(c("", ""), after = 0) %>%
+  append(c("", ""), after = 4)
+names3 <- rows[6] %>%
+  str_trim() %>%
+  str_split("\\s{2,}", simplify = TRUE) %>%
+  append(c("", ""), after = 0) %>%
+  append(c("", "", ""), after = 3) %>%
+  append(c("", "", ""), after = 7)
+colnames <- str_c(names1, names2, names3, sep = " ") %>% 
+  str_replace_all("\\s", "") %>%
+  append("Month", after = 0)
+
+# Final table on page 7
+rows[8:20] %>%
+  str_trim() %>%
+  str_split("\\s{2,}", simplify = TRUE) %>%
+  data.frame() %>%
+  setNames(colnames) %>%
+  # Convert everything (except for the first column) into numeric
+  mutate_at(-1, parse_number) -> tab1
+
+tab1
+```
+
+## YOY inflation (Page 8)
+
+```{r}
+# Table on page 8
+tab2 <- txt[8]
+
+# Scan to separate text file into rows
+rows <- str_split(tab2, "\\n+", simplify = TRUE) %>% str_trim()
+# Column names in lines 3-5
+names1 <- rows[3] %>%
+  str_trim() %>%
+  str_split("\\s{2,}", simplify = TRUE)
+names2 <- rows[4] %>%
+  str_trim() %>%
+  str_split("\\s{2,}", simplify = TRUE) %>%
+  append(c("", ""), after = 0) %>%
+  append(c("", ""), after = 4)
+names3 <- rows[5] %>%
+  str_trim() %>%
+  str_split("\\s{2,}", simplify = TRUE) %>%
+  append(c("", ""), after = 0) %>%
+  append(c("", "", ""), after = 3) %>%
+  append(c("", "", ""), after = 7)
+colnames <- str_c(names1, names2, names3, sep = " ") %>% 
+  str_replace_all("\\s", "") %>%
+  append("Month", after = 0)
+
+# Final table on page 8
+rows[7:19] %>%
+  str_trim() %>%
+  str_split("\\s{2,}", simplify = TRUE) %>%
+  data.frame() %>%
+  setNames(colnames) %>%
+  # Convert everything (except for the first column) into numeric
+  mutate_at(-1, parse_number) -> tab2
+
+tab2
+```
+
