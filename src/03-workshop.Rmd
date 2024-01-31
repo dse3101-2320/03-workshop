@@ -6,8 +6,8 @@ output:
   github_document:
     toc: true
     toc_depth: 2
-    fig_width: 8
-    fig_height: 6
+    fig_width: 10
+    fig_height: 4
 ---
 
 ```{r setup, include=FALSE}
@@ -119,6 +119,5 @@ ggplot(data = tab3, aes(x = yr_month, y = inflation, color = category)) +
   scale_color_manual(values = c("darkgray", "steelblue")) +
   labs(x = "", y = "% YOY", color = "", 
        title = "MAS Core and CPI-All Items Inflation") +
-  theme_fivethirtyeight() +
-  theme(axis.text.x = element_text(angle = 15, vjust = 0.5, hjust=1))
+  theme_fivethirtyeight() 
 ```
