@@ -182,7 +182,7 @@ ggplot(data = tab3, aes(x = yr_month, y = inflation, color = category)) +
   scale_color_manual(values = c("darkgray", "steelblue")) +
   labs(x = "", y = "% YOY", color = "", 
        title = "MAS Core and CPI-All Items Inflation") +
-  theme_fivethirtyeight() 
+  theme_fivethirtyeight()  
 ```
 
 ![](03-workshop_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
